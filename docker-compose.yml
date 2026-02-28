@@ -27,7 +27,7 @@ services:
     environment:
       DATABASE_URL: postgresql://postgres:2233@db:5432/expense_tracker
       REDIS_URL: redis://redis:6379/0
-      JWT_SECRET_KEY: your-super-secret-key-change-this
+      JWT_SECRET_KEY: c666e4c89a820d737b6d1e8f6c30c456c2cc2ae0f30c93ebc0a30253dce7d9b9
     depends_on:
       - db
       - redis
