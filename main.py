@@ -75,7 +75,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-# --- Protected ---
+# --- Protected -----
 
 @app.get("/expenses", response_model=list[ExpenseResponse])
 def get_expenses(
