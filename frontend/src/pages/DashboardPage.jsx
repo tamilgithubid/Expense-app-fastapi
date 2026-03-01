@@ -3,10 +3,10 @@ import { useSelector, useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import {
-  Wallet, Plus, LogOut, DollarSign, TrendingUp, Tag,
-  Loader2, Receipt, Search
+  Wallet, Plus, LogOut, DollarSign, Tag,
+  Loader2, Receipt, Search, Sparkles,
 } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -16,6 +16,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { useToast } from "@/components/ui/toast"
 import { useExpenses, useCreateExpense } from "@/hooks/useExpenses"
 import { logout } from "@/store/authSlice"
+import {
+  Squares, SpotlightCard, TiltedCard, CountUp,
+  GradientText, BlurText, ClickSpark,
+} from "@/components/reactbits"
 
 const CATEGORIES = [
   "Food", "Transport", "Shopping", "Entertainment",
@@ -23,49 +27,44 @@ const CATEGORIES = [
 ]
 
 const CATEGORY_COLORS = {
-  Food: "bg-orange-100 text-orange-700 border-orange-200",
-  Transport: "bg-blue-100 text-blue-700 border-blue-200",
-  Shopping: "bg-pink-100 text-pink-700 border-pink-200",
-  Entertainment: "bg-purple-100 text-purple-700 border-purple-200",
-  Health: "bg-green-100 text-green-700 border-green-200",
-  Education: "bg-indigo-100 text-indigo-700 border-indigo-200",
-  Bills: "bg-red-100 text-red-700 border-red-200",
-  Other: "bg-gray-100 text-gray-700 border-gray-200",
+  Food: "bg-orange-500/15 text-orange-400 border-orange-500/20",
+  Transport: "bg-blue-500/15 text-blue-400 border-blue-500/20",
+  Shopping: "bg-pink-500/15 text-pink-400 border-pink-500/20",
+  Entertainment: "bg-purple-500/15 text-purple-400 border-purple-500/20",
+  Health: "bg-green-500/15 text-green-400 border-green-500/20",
+  Education: "bg-indigo-500/15 text-indigo-400 border-indigo-500/20",
+  Bills: "bg-red-500/15 text-red-400 border-red-500/20",
+  Other: "bg-gray-500/15 text-gray-400 border-gray-500/20",
 }
 
-function AnimatedCounter({ value }) {
-  return (
-    <motion.span
-      key={value}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-    >
-      ${value.toFixed(2)}
-    </motion.span>
-  )
+const CATEGORY_ICONS = {
+  Food: "🍕", Transport: "🚗", Shopping: "🛍️", Entertainment: "🎬",
+  Health: "💊", Education: "📚", Bills: "📄", Other: "📌",
 }
 
-function StatCard({ icon: Icon, title, value, color, delay }) {
+function StatCard({ icon: Icon, title, value, gradient, spotlightColor, delay }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay }}
+      transition={{ duration: 0.6, delay, ease: [0.25, 0.46, 0.45, 0.94] }}
     >
-      <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
+      <SpotlightCard
+        className="bg-slate-900/60 border-white/5 backdrop-blur-sm"
+        spotlightColor={spotlightColor}
+      >
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-muted-foreground">{title}</p>
-              <p className="text-2xl font-bold mt-1">{value}</p>
+              <p className="text-sm font-medium text-slate-400">{title}</p>
+              <p className="text-3xl font-bold text-white mt-2">{value}</p>
             </div>
-            <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${color}`}>
-              <Icon className="h-6 w-6 text-white" />
+            <div className={`flex h-14 w-14 items-center justify-center rounded-2xl ${gradient} shadow-lg`}>
+              <Icon className="h-7 w-7 text-white" />
             </div>
           </div>
         </CardContent>
-      </Card>
+      </SpotlightCard>
     </motion.div>
   )
 }
@@ -132,53 +131,120 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20">
+    <div className="min-h-screen bg-slate-950 text-white relative overflow-hidden">
+      {/* Animated grid background */}
+      <Squares
+        speed={0.2}
+        squareSize={50}
+        borderColor="rgba(99, 102, 241, 0.06)"
+        hoverFillColor="rgba(99, 102, 241, 0.08)"
+        direction="diagonal"
+      />
+
+      {/* Ambient glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-purple-500/10 blur-[100px] rounded-full pointer-events-none" />
+
       {/* Header */}
       <motion.header
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="sticky top-0 z-40 border-b bg-white/80 backdrop-blur-xl"
+        className="sticky top-0 z-40 border-b border-white/5 bg-slate-950/80 backdrop-blur-2xl"
       >
         <div className="mx-auto max-w-6xl flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-md">
+            <motion.div
+              whileHover={{ rotate: 10, scale: 1.1 }}
+              className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/20"
+            >
               <Wallet className="h-5 w-5 text-white" />
-            </div>
+            </motion.div>
             <div>
-              <h1 className="text-lg font-bold text-foreground">ExpenseTracker</h1>
-              <p className="text-xs text-muted-foreground">Welcome, {user?.username}</p>
+              <GradientText
+                colors={["#60a5fa", "#818cf8", "#a78bfa", "#60a5fa"]}
+                speed={3}
+                className="text-lg"
+              >
+                ExpenseTracker
+              </GradientText>
+              <p className="text-xs text-slate-500">Welcome, {user?.username}</p>
             </div>
           </div>
-          <Button variant="ghost" onClick={handleLogout} className="text-muted-foreground hover:text-destructive">
+          <Button
+            variant="ghost"
+            onClick={handleLogout}
+            className="text-slate-400 hover:text-red-400 hover:bg-red-500/10"
+          >
             <LogOut className="mr-2 h-4 w-4" />
             Logout
           </Button>
         </div>
       </motion.header>
 
-      <main className="mx-auto max-w-6xl px-6 py-8 space-y-8">
+      <main className="relative z-10 mx-auto max-w-6xl px-6 py-8 space-y-8">
+        {/* Welcome */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.1 }}
+        >
+          <BlurText
+            text={`Good ${new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}, ${user?.username || "User"}`}
+            delay={80}
+            className="text-2xl font-bold text-white"
+          />
+        </motion.div>
+
         {/* Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
           <StatCard
             icon={DollarSign}
-            title="Total Expenses"
-            value={<AnimatedCounter value={totalAmount} />}
-            color="bg-gradient-to-br from-blue-500 to-indigo-600"
-            delay={0}
+            title="Total Spent"
+            value={
+              <CountUp
+                from={0}
+                to={totalAmount}
+                duration={1.5}
+                decimals={2}
+                prefix="$"
+                className="text-3xl font-bold text-white"
+              />
+            }
+            gradient="bg-gradient-to-br from-blue-500 to-indigo-600"
+            spotlightColor="rgba(99, 102, 241, 0.2)"
+            delay={0.15}
           />
           <StatCard
             icon={Receipt}
             title="Total Items"
-            value={expenses.length}
-            color="bg-gradient-to-br from-emerald-500 to-teal-600"
-            delay={0.1}
+            value={
+              <CountUp
+                from={0}
+                to={expenses.length}
+                duration={1}
+                decimals={0}
+                className="text-3xl font-bold text-white"
+              />
+            }
+            gradient="bg-gradient-to-br from-emerald-500 to-teal-600"
+            spotlightColor="rgba(16, 185, 129, 0.2)"
+            delay={0.25}
           />
           <StatCard
             icon={Tag}
-            title="Categories Used"
-            value={categoryCount}
-            color="bg-gradient-to-br from-purple-500 to-pink-600"
-            delay={0.2}
+            title="Categories"
+            value={
+              <CountUp
+                from={0}
+                to={categoryCount}
+                duration={1}
+                decimals={0}
+                className="text-3xl font-bold text-white"
+              />
+            }
+            gradient="bg-gradient-to-br from-purple-500 to-pink-600"
+            spotlightColor="rgba(168, 85, 247, 0.2)"
+            delay={0.35}
           />
         </div>
 
@@ -186,23 +252,23 @@ export default function DashboardPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
+          transition={{ delay: 0.4 }}
           className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between"
         >
           <div className="flex flex-col sm:flex-row gap-3 flex-1 w-full sm:w-auto">
             <div className="relative flex-1 min-w-0">
-              <Search className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+              <Search className="absolute left-3 top-2.5 h-5 w-5 text-slate-500" />
               <Input
                 placeholder="Search expenses..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
+                className="pl-10 bg-slate-900/60 border-white/10 text-white placeholder:text-slate-500 focus-visible:ring-indigo-500/50"
               />
             </div>
             <Select
               value={filterCategory}
               onChange={(e) => setFilterCategory(e.target.value)}
-              className="w-full sm:w-[180px]"
+              className="w-full sm:w-[180px] bg-slate-900/60 border-white/10 text-white"
             >
               <option value="">All Categories</option>
               {CATEGORIES.map((cat) => (
@@ -210,33 +276,57 @@ export default function DashboardPage() {
               ))}
             </Select>
           </div>
-          <Button onClick={() => setDialogOpen(true)} className="w-full sm:w-auto">
-            <Plus className="mr-2 h-4 w-4" />
-            Add Expense
-          </Button>
+          <ClickSpark sparkColor="#818cf8" sparkCount={12}>
+            <Button
+              onClick={() => setDialogOpen(true)}
+              className="w-full sm:w-auto bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:via-indigo-500 hover:to-purple-500 shadow-lg shadow-indigo-500/20 border-0 h-10"
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Add Expense
+            </Button>
+          </ClickSpark>
         </motion.div>
 
         {/* Expense List */}
         <div className="space-y-3">
           {isLoading ? (
-            <div className="flex items-center justify-center py-20">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <div className="flex flex-col items-center justify-center py-24 gap-3">
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+              >
+                <Loader2 className="h-10 w-10 text-indigo-400" />
+              </motion.div>
+              <p className="text-sm text-slate-500">Loading expenses...</p>
             </div>
           ) : filteredExpenses.length === 0 ? (
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-center py-20"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="text-center py-24"
             >
-              <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-muted">
-                <Receipt className="h-10 w-10 text-muted-foreground" />
-              </div>
-              <h3 className="text-lg font-semibold text-foreground">No expenses found</h3>
-              <p className="text-muted-foreground mt-1">
+              <motion.div
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-3xl bg-slate-800/50 border border-white/5"
+              >
+                <Receipt className="h-12 w-12 text-slate-600" />
+              </motion.div>
+              <h3 className="text-xl font-semibold text-slate-300">No expenses found</h3>
+              <p className="text-slate-500 mt-2 max-w-sm mx-auto">
                 {expenses.length === 0
-                  ? "Start by adding your first expense!"
+                  ? "Start tracking your spending by adding your first expense!"
                   : "Try adjusting your search or filter."}
               </p>
+              {expenses.length === 0 && (
+                <Button
+                  onClick={() => setDialogOpen(true)}
+                  className="mt-6 bg-indigo-600 hover:bg-indigo-500"
+                >
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  Add First Expense
+                </Button>
+              )}
             </motion.div>
           ) : (
             <AnimatePresence mode="popLayout">
@@ -244,41 +334,48 @@ export default function DashboardPage() {
                 <motion.div
                   key={expense.id}
                   layout
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                  transition={{ duration: 0.3, delay: index * 0.05 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.35, delay: index * 0.04 }}
                 >
-                  <Card className="hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 group">
-                    <CardContent className="flex items-center justify-between p-4">
-                      <div className="flex items-center gap-4">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500/10 to-indigo-500/10 group-hover:from-blue-500/20 group-hover:to-indigo-500/20 transition-colors">
-                          <TrendingUp className="h-5 w-5 text-primary" />
+                  <TiltedCard tiltDegree={3} glareOpacity={0.08}>
+                    <Card className="bg-slate-900/60 border-white/5 hover:border-white/10 transition-all duration-300 group">
+                      <CardContent className="flex items-center justify-between p-5">
+                        <div className="flex items-center gap-4">
+                          <motion.div
+                            whileHover={{ scale: 1.15, rotate: 5 }}
+                            className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-white/5 text-xl"
+                          >
+                            {CATEGORY_ICONS[expense.category] || "📌"}
+                          </motion.div>
+                          <div>
+                            <p className="font-semibold text-white group-hover:text-indigo-300 transition-colors">
+                              {expense.title}
+                            </p>
+                            <p className="text-xs text-slate-500 mt-0.5">
+                              {new Date(expense.created_at).toLocaleDateString("en-US", {
+                                weekday: "short",
+                                month: "short",
+                                day: "numeric",
+                              })}
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-medium text-foreground">{expense.title}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {new Date(expense.created_at).toLocaleDateString("en-US", {
-                              month: "short",
-                              day: "numeric",
-                              year: "numeric",
-                            })}
-                          </p>
+                        <div className="flex items-center gap-4">
+                          <Badge
+                            variant="outline"
+                            className={`${CATEGORY_COLORS[expense.category] || CATEGORY_COLORS.Other} border`}
+                          >
+                            {expense.category}
+                          </Badge>
+                          <span className="text-xl font-bold text-white min-w-[90px] text-right font-mono">
+                            ${expense.amount.toFixed(2)}
+                          </span>
                         </div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <Badge
-                          variant="outline"
-                          className={CATEGORY_COLORS[expense.category] || CATEGORY_COLORS.Other}
-                        >
-                          {expense.category}
-                        </Badge>
-                        <span className="text-lg font-bold text-foreground min-w-[80px] text-right">
-                          ${expense.amount.toFixed(2)}
-                        </span>
-                      </div>
-                    </CardContent>
-                  </Card>
+                      </CardContent>
+                    </Card>
+                  </TiltedCard>
                 </motion.div>
               ))}
             </AnimatePresence>
@@ -288,24 +385,34 @@ export default function DashboardPage() {
 
       {/* Add Expense Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent>
+        <DialogContent className="bg-slate-900 border-white/10 text-white">
           <DialogHeader>
-            <DialogTitle>Add New Expense</DialogTitle>
-            <DialogDescription>Track a new expense by filling out the details below.</DialogDescription>
+            <DialogTitle className="text-white text-xl">
+              <span className="flex items-center gap-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500/20">
+                  <Plus className="h-4 w-4 text-indigo-400" />
+                </div>
+                Add New Expense
+              </span>
+            </DialogTitle>
+            <DialogDescription className="text-slate-400">
+              Track a new expense by filling out the details below.
+            </DialogDescription>
           </DialogHeader>
-          <form onSubmit={handleCreateExpense} className="space-y-4 mt-4">
+          <form onSubmit={handleCreateExpense} className="space-y-5 mt-4">
             <div className="space-y-2">
-              <Label htmlFor="exp-title">Title</Label>
+              <Label htmlFor="exp-title" className="text-slate-300">Title</Label>
               <Input
                 id="exp-title"
                 placeholder="e.g. Coffee, Groceries"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 required
+                className="bg-slate-800/60 border-white/10 text-white placeholder:text-slate-500 focus-visible:ring-indigo-500/50 h-11"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="exp-amount">Amount ($)</Label>
+              <Label htmlFor="exp-amount" className="text-slate-300">Amount ($)</Label>
               <Input
                 id="exp-amount"
                 type="number"
@@ -315,44 +422,52 @@ export default function DashboardPage() {
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 required
+                className="bg-slate-800/60 border-white/10 text-white placeholder:text-slate-500 focus-visible:ring-indigo-500/50 h-11 font-mono"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="exp-category">Category</Label>
+              <Label htmlFor="exp-category" className="text-slate-300">Category</Label>
               <Select
                 id="exp-category"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 required
+                className="bg-slate-800/60 border-white/10 text-white h-11"
               >
                 <option value="" disabled>Select a category</option>
                 {CATEGORIES.map((cat) => (
-                  <option key={cat} value={cat}>{cat}</option>
+                  <option key={cat} value={cat}>{CATEGORY_ICONS[cat]} {cat}</option>
                 ))}
               </Select>
             </div>
-            <div className="flex gap-3 pt-2">
+            <div className="flex gap-3 pt-3">
               <Button
                 type="button"
                 variant="outline"
-                className="flex-1"
+                className="flex-1 border-white/10 text-slate-300 hover:bg-slate-800 hover:text-white"
                 onClick={() => setDialogOpen(false)}
               >
                 Cancel
               </Button>
-              <Button type="submit" className="flex-1" disabled={createExpense.isPending}>
-                {createExpense.isPending ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Adding...
-                  </>
-                ) : (
-                  <>
-                    <Plus className="mr-2 h-4 w-4" />
-                    Add Expense
-                  </>
-                )}
-              </Button>
+              <ClickSpark sparkColor="#818cf8" sparkCount={8}>
+                <Button
+                  type="submit"
+                  className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 border-0"
+                  disabled={createExpense.isPending}
+                >
+                  {createExpense.isPending ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Adding...
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="mr-2 h-4 w-4" />
+                      Add Expense
+                    </>
+                  )}
+                </Button>
+              </ClickSpark>
             </div>
           </form>
         </DialogContent>

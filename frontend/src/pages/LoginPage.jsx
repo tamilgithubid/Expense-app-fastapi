@@ -2,14 +2,12 @@ import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { useDispatch } from "react-redux"
 import { motion } from "framer-motion"
-import { Wallet, Eye, EyeOff, Loader2 } from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Wallet, Eye, EyeOff, Loader2, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { useToast } from "@/components/ui/toast"
 import { loginUser } from "@/services/api"
 import { setCredentials } from "@/store/authSlice"
+import { Particles, BlurText, DecryptedText, StarBorder, ClickSpark } from "@/components/reactbits"
 
 export default function LoginPage() {
   const [username, setUsername] = useState("")
@@ -40,113 +38,133 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
-      {/* Animated gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50" />
-      <div className="absolute inset-0">
-        <motion.div
-          className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-blue-200/40 blur-3xl"
-          animate={{ x: [0, 60, 0], y: [0, 40, 0] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] rounded-full bg-purple-200/40 blur-3xl"
-          animate={{ x: [0, -60, 0], y: [0, -40, 0] }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute top-[40%] right-[20%] w-[300px] h-[300px] rounded-full bg-indigo-200/30 blur-3xl"
-          animate={{ x: [0, -30, 0], y: [0, 60, 0] }}
-          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-        />
-      </div>
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-[#060918]">
+      {/* Interactive particle network */}
+      <Particles
+        count={90}
+        colors={["#6366f1", "#818cf8", "#a78bfa", "#c084fc"]}
+        connectDistance={130}
+        speed={0.3}
+        mouseRadius={160}
+      />
 
+      {/* Ambient glow blobs */}
+      <div className="absolute top-1/4 left-1/3 w-[500px] h-[500px] bg-indigo-600/10 blur-[150px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-purple-600/8 blur-[130px] rounded-full pointer-events-none" />
+
+      {/* Card */}
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="relative z-10 w-full max-w-md px-4"
+        initial={{ opacity: 0, y: 40, scale: 0.96 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
+        className="relative z-10 w-full max-w-[420px] px-4"
       >
-        <Card className="border-0 shadow-2xl bg-white/80 backdrop-blur-xl">
-          <CardHeader className="text-center pb-2">
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", duration: 0.8, delay: 0.2 }}
-              className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg"
-            >
-              <Wallet className="h-8 w-8 text-white" />
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-            >
-              <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                Welcome Back
-              </CardTitle>
-              <CardDescription className="mt-2">
-                Sign in to manage your expenses
-              </CardDescription>
-            </motion.div>
-          </CardHeader>
-          <CardContent>
+        <StarBorder color="rgba(99, 102, 241, 0.5)" speed="6s">
+          <div className="bg-[#0d1028]/90 backdrop-blur-2xl rounded-xl p-8">
+            {/* Icon */}
+            <div className="text-center mb-6">
+              <motion.div
+                initial={{ scale: 0, rotate: -180 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ type: "spring", duration: 0.8, delay: 0.2 }}
+                className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 shadow-xl shadow-indigo-500/25"
+              >
+                <Wallet className="h-8 w-8 text-white" />
+              </motion.div>
+
+              {/* Title */}
+              <h1 className="text-3xl font-bold mb-2">
+                <BlurText
+                  text="Welcome Back"
+                  delay={100}
+                  className="justify-center text-white"
+                />
+              </h1>
+
+              {/* Subtitle */}
+              <div className="text-indigo-300/60 text-sm">
+                <DecryptedText
+                  text="Sign in to manage your expenses"
+                  speed={35}
+                  className="text-indigo-300/60"
+                />
+              </div>
+            </div>
+
+            {/* Form */}
             <motion.form
               onSubmit={handleSubmit}
-              className="space-y-4"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
+              className="space-y-5"
             >
+              {/* Username */}
               <div className="space-y-2">
-                <Label htmlFor="username">Username</Label>
-                <Input
-                  id="username"
+                <label className="text-sm font-medium text-slate-400">Username</label>
+                <input
+                  type="text"
                   placeholder="Enter your username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   required
+                  className="w-full h-12 px-4 rounded-lg bg-white/5 border border-white/10 text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/40 transition-all text-sm"
                 />
               </div>
+
+              {/* Password */}
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <label className="text-sm font-medium text-slate-400">Password</label>
                 <div className="relative">
-                  <Input
-                    id="password"
+                  <input
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    className="w-full h-12 px-4 pr-12 rounded-lg bg-white/5 border border-white/10 text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/40 transition-all text-sm"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-2.5 text-muted-foreground hover:text-foreground cursor-pointer"
+                    className="absolute right-4 top-3.5 text-slate-500 hover:text-slate-300 cursor-pointer transition-colors"
                   >
                     {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                   </button>
                 </div>
               </div>
-              <Button type="submit" className="w-full h-11 text-base" disabled={loading}>
-                {loading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Signing in...
-                  </>
-                ) : (
-                  "Sign In"
-                )}
-              </Button>
-              <p className="text-center text-sm text-muted-foreground">
+
+              {/* Submit */}
+              <ClickSpark sparkColor="#818cf8" sparkCount={10}>
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full h-12 text-[15px] font-semibold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:via-indigo-500 hover:to-purple-500 shadow-xl shadow-indigo-600/20 border-0 rounded-lg"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      Signing in...
+                    </>
+                  ) : (
+                    <>
+                      Sign In
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </>
+                  )}
+                </Button>
+              </ClickSpark>
+
+              {/* Footer */}
+              <p className="text-center text-sm text-slate-500 pt-1">
                 Don't have an account?{" "}
-                <Link to="/register" className="font-medium text-primary hover:underline">
-                  Sign up
+                <Link to="/register" className="font-semibold text-indigo-400 hover:text-indigo-300 transition-colors">
+                  Create one
                 </Link>
               </p>
             </motion.form>
-          </CardContent>
-        </Card>
+          </div>
+        </StarBorder>
       </motion.div>
     </div>
   )
