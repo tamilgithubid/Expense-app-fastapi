@@ -10,6 +10,8 @@ services:
       - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      - default
 
   redis:
     image: redis:7-alpine
@@ -19,8 +21,21 @@ services:
     volumes:
       - redisdata:/data
 
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    networks:
+      - default
+
   app:
-    build: .
+    build: ./backend
     restart: always
     ports:
       - "8000:8000"
@@ -32,6 +47,18 @@ services:
       - db
       - redis
 
+  frontend:
+    build: ./frontend
+    restart: always
+    ports:
+      - "3000:80"
+    depends_on:
+      - app
+
 volumes:
   pgdata:
   redisdata:
+
+networks:
+  default:
+    driver: bridge
